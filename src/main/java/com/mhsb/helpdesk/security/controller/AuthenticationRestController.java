@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mhsb.helpdesk.entity.Usuario;
+import com.mhsb.helpdesk.security.config.WebSecurityConfig;
 import com.mhsb.helpdesk.security.jwt.JwtAuthenticationRequest;
 import com.mhsb.helpdesk.security.jwt.JwtTokenUtil;
 import com.mhsb.helpdesk.security.model.CurrentUser;
@@ -27,7 +29,7 @@ import com.mhsb.helpdesk.service.UsuarioService;
 public class AuthenticationRestController {
 
 	@Autowired
-	private AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 	
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
@@ -39,7 +41,7 @@ public class AuthenticationRestController {
 	private UsuarioService usuarioService;
 	
 	@PostMapping(value = "/api/auth")
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws AuthenticationException{
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) throws Exception{
 		
 		final Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),
