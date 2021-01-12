@@ -2,7 +2,7 @@ package com.mhsb.helpdesk.enums;
 
 public enum PerfilEnum {
 
-	PAPEL_ADMIN,
-	PAPEL_TECNICO,
-	PAPEL_CLIENTE;
+	ROLE_ADMIN,
+	ROLE_TECNICO,
+	ROLE_CLIENTE;
 }

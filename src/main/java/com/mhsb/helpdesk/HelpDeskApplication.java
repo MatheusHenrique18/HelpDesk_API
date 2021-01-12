@@ -29,7 +29,7 @@ public class HelpDeskApplication {
 		
 		admin.setEmail("admin@helpdesk.com");
 		admin.setSenha(passwordEncoder.encode("123456"));
-		admin.setPerfil(PerfilEnum.PAPEL_ADMIN);
+		admin.setPerfil(PerfilEnum.ROLE_ADMIN);
 		
 		Usuario usuarioExistente = usuarioRepository.findByEmail("admin@helpdesk.com");
 		if(usuarioExistente == null) {
