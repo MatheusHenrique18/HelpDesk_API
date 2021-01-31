@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.mhsb.helpdesk.dto.ContadoresChamado;
 import com.mhsb.helpdesk.entity.Chamado;
 import com.mhsb.helpdesk.entity.MudancaStatus;
 import com.mhsb.helpdesk.entity.Usuario;
@@ -219,6 +220,106 @@ public class ChamadoController {
 		response.setData(chamados);
 		return ResponseEntity.ok(response);
 	}
+	
+	@PutMapping(value = "{id}/{status}")
+	@PreAuthorize("hasAnyRole('CLIENTE','TECNICO')")
+	public ResponseEntity<Response<Chamado>> changeStatus(@PathVariable("id") String id,
+			@PathVariable("status") String status,
+			HttpServletRequest request,
+			@RequestBody Chamado chamado,
+			BindingResult result){
+		
+		Response<Chamado> response = new Response<Chamado>();
+		
+		try {
+			validateChangeStatus(id, status, result);
+			if(result.hasErrors()) {
+				result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
+				return ResponseEntity.badRequest().body(response);
+			}
+			
+			Optional<Chamado> chamadoOptional = chamadoService.findById(id);
+			Chamado chamadoAtual = chamadoOptional.get();
+			chamadoAtual.setStatus(StatusEnum.getStatus(status));
+			
+			if(status.equals("DESIGNADO")) {
+				chamadoAtual.setUsuarioDesignado(usuarioFromRequest(request));
+			}
+			
+			Chamado chamadoPersistido = (Chamado) chamadoService.createOrUpdate(chamadoAtual);
+			MudancaStatus mudancaStatus = new MudancaStatus();
+			mudancaStatus.setUsuarioAlteraStatus(usuarioFromRequest(request));
+			mudancaStatus.setDataAlteraStatus(new Date());
+			mudancaStatus.setStatus(StatusEnum.getStatus(status));
+			mudancaStatus.setChamado(chamadoPersistido);
+			chamadoService.createMudancaStatus(mudancaStatus);
+			response.setData(chamadoPersistido);
+			
+		} catch (Exception e) {
+			response.getErros().add(e.getMessage());
+			return ResponseEntity.badRequest().body(response);
+		}
+		return ResponseEntity.ok(response);
+	}
+	
+	private void validateChangeStatus(String id, String status, BindingResult result) {
+		if(id == null || id.equals("")) {
+			result.addError(new ObjectError("Chamado", "Id não informado."));
+		}
+		if(status == null || status.equals("")) {
+			result.addError(new ObjectError("Chamado", "Título não informado."));
+		}
+	}
+	
+	@GetMapping(value = "/contadores")
+	public ResponseEntity<Response<ContadoresChamado>> listarContadores(){
+		Response<ContadoresChamado> response = new Response<ContadoresChamado>();
+		ContadoresChamado contadores = new ContadoresChamado();
+		
+		Integer chamadosNovos = 0;
+		Integer chamadosDesignados = 0;
+		Integer chamadosResolvidos = 0;
+		Integer chamadosAprovados = 0;
+		Integer chamadosReprovados = 0;
+		Integer chamadosFechados = 0;
+		
+		Iterable<Chamado> chamados = chamadoService.findAll();
+		if(chamados != null) {
+			for(Iterator<Chamado> iterator = chamados.iterator(); iterator.hasNext();) {
+				Chamado chamado = (Chamado) iterator.next();
+				if(chamado.getStatus().equals(StatusEnum.NOVO)) {
+					chamadosNovos++;
+				}
+				if(chamado.getStatus().equals(StatusEnum.DESIGNADO)) {
+					chamadosDesignados++;
+				}
+				if(chamado.getStatus().equals(StatusEnum.RESOLVIDO)) {
+					chamadosResolvidos++;
+				}
+				if(chamado.getStatus().equals(StatusEnum.APROVADO)) {
+					chamadosAprovados++;
+				}
+				if(chamado.getStatus().equals(StatusEnum.REPROVADO)) {
+					chamadosReprovados++;
+				}
+				if(chamado.getStatus().equals(StatusEnum.FECHADO)) {
+					chamadosFechados++;
+				}
+			}
+		}
+		
+		contadores.setChamadosNovos(chamadosNovos);
+		contadores.setChamadosDesignados(chamadosDesignados);
+		contadores.setChamadosResolvidos(chamadosResolvidos);
+		contadores.setChamadosAprovados(chamadosAprovados);
+		contadores.setChamadosReprovados(chamadosReprovados);
+		contadores.setChamadosFechados(chamadosFechados);
+		
+		response.setData(contadores);
+		
+		return ResponseEntity.ok(response);
+	}
+	
 	
 	
 }
