@@ -65,7 +65,7 @@ public class ChamadoServiceImpl implements ChamadoService{
 	public Page<Chamado> findByParameters(int page, int count, String titulo, String status, String prioridade) {
 //		Pageable pages = new PageRequest(page, count);
 //		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusAndPrioridadeOrderByDataDesc(pages, titulo,  status, prioridade);
-		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusAndPrioridadeOrderByDataDesc(PageRequest.of(page, count), titulo, status, prioridade);
+		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusContainingAndPrioridadeContainingOrderByDataDesc(PageRequest.of(page, count), titulo, status, prioridade);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class ChamadoServiceImpl implements ChamadoService{
 			String prioridade, String usuarioId) {
 //		Pageable pages = new PageRequest(page, count);
 //		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusAndPrioridadeAndUsuarioIdOrderByDataDesc(pages, titulo, status, prioridade, usuarioId);
-		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusAndPrioridadeAndUsuarioIdOrderByDataDesc(PageRequest.of(page, count), titulo, status, prioridade, usuarioId);
+		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusContainingAndPrioridadeContainingAndUsuarioIdOrderByDataDesc(PageRequest.of(page, count), titulo, status, prioridade, usuarioId);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class ChamadoServiceImpl implements ChamadoService{
 			String prioridade, String usuarioDesignadoId) {
 //		Pageable pages = new PageRequest(page, count);
 //		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusAndPrioridadeAndUsuarioIdOrderByDataDesc(pages, titulo, status, prioridade, usuarioDesignadoId);
-		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusAndPrioridadeAndUsuarioDesignadoIdOrderByDataDesc(PageRequest.of(page, count), titulo, status, prioridade, usuarioDesignadoId);
+		return this.chamadoRepository.findByTituloIgnoreCaseContainingAndStatusContainingAndPrioridadeContainingAndUsuarioDesignadoIdOrderByDataDesc(PageRequest.of(page, count), titulo, status, prioridade, usuarioDesignadoId);
 	}
 
 }

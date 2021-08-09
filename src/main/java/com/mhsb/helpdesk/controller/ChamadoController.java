@@ -192,14 +192,13 @@ public class ChamadoController {
 		response.setData(chamados);
 		return ResponseEntity.ok(response);
 	}
-	
-	@GetMapping(value = "{page}/{count}/{numero}/{titulo}/{status}/{prioridade}") //	/{assinado}
+	@GetMapping(value = "{page}/{count}/{numero}/{titulo}/{status}/{prioridade}/{assinado}")
 	@PreAuthorize("hasAnyRole('CLIENTE','TECNICO')")
 	public ResponseEntity<Response<Page<Chamado>>> findByParams (HttpServletRequest request,
 			@PathVariable("page") int page, @PathVariable("count") int count,
 			@PathVariable("numero") Integer numero, @PathVariable("titulo") String titulo,
-			@PathVariable("status") String status, @PathVariable("prioridade") String prioridade
-			/*@PathVariable("assinado") boolean assinado*/){
+			@PathVariable("status") String status, @PathVariable("prioridade") String prioridade,
+			@PathVariable("assinado") boolean assinado){
 		
 		titulo = titulo.equals("uninformed") ? "" : titulo;
 		status = status.equals("uninformed") ? "" : status;
@@ -213,11 +212,11 @@ public class ChamadoController {
 		}else {
 			Usuario usuarioRequest = usuarioFromRequest(request);
 			if(usuarioRequest.getPerfil().equals(PerfilEnum.ROLE_TECNICO)) {
-//				if(assinado) {
-//					chamados = chamadoService.findByParameterAndAssignedUser(page, count, titulo, status, prioridade, usuarioRequest.getId());
-//				}else {
+				if(assinado) {
+					chamados = chamadoService.findByParameterAndAssignedUser(page, count, titulo, status, prioridade, usuarioRequest.getId());
+				}else {
 					chamados = chamadoService.findByParameters(page, count, titulo, status, prioridade);
-//				}
+				}
 			} else if(usuarioRequest.getPerfil().equals(PerfilEnum.ROLE_CLIENTE)) {
 				chamados = chamadoService.findByParametersAndCurrentUser(page, count, titulo, status, prioridade, usuarioRequest.getId());
 			}

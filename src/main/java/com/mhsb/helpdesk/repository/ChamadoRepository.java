@@ -11,11 +11,11 @@ public interface ChamadoRepository extends MongoRepository<Chamado, String>{
 
 	Page<Chamado> findByUsuarioIdOrderByDataDesc(Pageable pages, String usuarioId);
 	
-	Page<Chamado> findByTituloIgnoreCaseContainingAndStatusAndPrioridadeOrderByDataDesc(Pageable pages, String titulo, String status, String prioridade);
+	Page<Chamado> findByTituloIgnoreCaseContainingAndStatusContainingAndPrioridadeContainingOrderByDataDesc(Pageable pages, String titulo, String status, String prioridade);
 
-	Page<Chamado> findByTituloIgnoreCaseContainingAndStatusAndPrioridadeAndUsuarioIdOrderByDataDesc(Pageable pages, String titulo, String status, String prioridade, String usuarioId);
+	Page<Chamado> findByTituloIgnoreCaseContainingAndStatusContainingAndPrioridadeContainingAndUsuarioIdOrderByDataDesc(Pageable pages, String titulo, String status, String prioridade, String usuarioId);
 	
-	Page<Chamado> findByTituloIgnoreCaseContainingAndStatusAndPrioridadeAndUsuarioDesignadoIdOrderByDataDesc(Pageable pages, String titulo, String status, String prioridade, String usuarioDesignadoId);
+	Page<Chamado> findByTituloIgnoreCaseContainingAndStatusContainingAndPrioridadeContainingAndUsuarioDesignadoIdOrderByDataDesc(Pageable pages, String titulo, String status, String prioridade, String usuarioDesignadoId);
 
 	Page<Chamado> findByNumero(Pageable pages, Integer numero);
 	
